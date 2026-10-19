@@ -48,15 +48,17 @@ export function worst(statuses: Status[]): Status {
 }
 
 /**
- * A change is significant when |delta| exceeds both the metric's noise floor and half of
- * the larger run-to-run spread (max − min) seen in either build. Byte counts barely vary
- * between runs, so their floor decides; timings must move by more than both the floor
- * and the spread Lighthouse itself showed, so a single slow run can't fail a PR.
+ * A change is significant when |delta| exceeds the metric's noise floor, its relative
+ * floor (a fraction of the base median), and half of the larger run-to-run spread
+ * (max − min) seen in either build. Byte counts barely vary between runs, so their
+ * absolute floor decides. Timings must move by more than all three, because their noise
+ * grows with the value and five runs rarely show the full spread.
  */
 export function isSignificant(info: MetricInfo, base: Stat, head: Stat): boolean {
   const delta = Math.abs(head.median - base.median);
+  const relative = info.relativeFloor * Math.abs(base.median);
   const halfSpread = Math.max(base.max - base.min, head.max - head.min) / 2;
-  return delta > info.noiseFloor && delta > halfSpread;
+  return delta > info.noiseFloor && delta > relative && delta > halfSpread;
 }
 
 function findPage(measurement: Measurement, path: string): PageMeasurement {

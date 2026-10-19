@@ -33,6 +33,21 @@ test("significance: a change inside the run-to-run spread is ignored", () => {
   assert.equal(result.significant, false);
 });
 
+test("significance: a heavy page's normal TBT swing is ignored", () => {
+  // Real runs of one commit measured twice: +101 ms clears the 30 ms floor and the
+  // 62 ms half-spread, but not 15% of an 803 ms base.
+  const { result } = one("tbt", { tbt: [868, 792, 743, 835, 803] }, { tbt: [818, 904, 913, 865, 915] });
+  assert.equal(result.delta, 101);
+  assert.equal(result.significant, false);
+  assert.equal(result.status, "pass");
+});
+
+test("significance: the relative floor still lets a real TBT regression through", () => {
+  const { result } = one("tbt", { tbt: [780, 800, 803, 810, 830] }, { tbt: [1080, 1100, 1110, 1120, 1150] });
+  assert.equal(result.significant, true);
+  assert.equal(result.regressed, true);
+});
+
 test("significance: a change beyond floor and spread counts, and warns without a limit", () => {
   const { result, comparison } = one("tbt", { tbt: [110, 120, 120, 120, 130] }, { tbt: [280, 290, 290, 290, 300] });
   assert.equal(result.significant, true);

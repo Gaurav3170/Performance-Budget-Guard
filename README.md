@@ -177,17 +177,19 @@ Unknown keys are rejected with a "did you mean" hint, so a typo like `"lpc"` can
 
 1. Each page is measured `runs` times per build. Base and PR runs are interleaved, and the order flips every round, so slow drift on the runner (thermal throttling, a noisy neighbour) affects both builds equally.
 2. Each metric is compared on its median, along with the min and max.
-3. A change counts only if it is larger than the metric's noise floor **and** larger than half the run-to-run spread (max − min) observed in either build. A single slow run can't fail a PR.
+3. A change counts only if it is larger than all three of: the metric's noise floor, its relative floor (a share of the base value), and half the run-to-run spread (max − min) observed in either build. A single slow run can't fail a PR.
 
-   | Metric | Noise floor |
-   | --- | --- |
-   | Performance score | 3 points |
-   | LCP, FCP | 100 ms |
-   | Total Blocking Time | 30 ms |
-   | CLS | 0.01 |
-   | Speed Index | 150 ms |
-   | JavaScript | 1 KiB (1,024 B) |
-   | Total transferred | 2 KiB (2,048 B) |
+   | Metric | Noise floor | Relative floor |
+   | --- | --- | --- |
+   | Performance score | 3 points | — |
+   | LCP, FCP | 100 ms | 5% |
+   | Total Blocking Time | 30 ms | 15% |
+   | CLS | 0.01 | — |
+   | Speed Index | 150 ms | 5% |
+   | JavaScript | 1 KiB (1,024 B) | — |
+   | Total transferred | 2 KiB (2,048 B) | — |
+
+   The relative floor exists because timing noise grows with the value. On a page with 800 ms of blocking time, two runs of the same commit can differ by 100 ms; on a page with 50 ms they barely move. Byte counts are the same on every run, so their small absolute floor is enough. Budgets are checked on the medians whether or not a change is significant.
 
 4. Each metric then gets a status:
    - **fail**: the PR build breaks a budget.

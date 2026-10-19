@@ -23,18 +23,24 @@ export interface MetricInfo {
    * are close to deterministic, so their floors are small; timings vary run to run.
    */
   noiseFloor: number;
+  /**
+   * Changes smaller than this fraction of the base median are also noise. Timing noise
+   * grows with the value: a page with 800 ms of blocking time swings by 100 ms between
+   * identical runs, while one with 50 ms barely moves.
+   */
+  relativeFloor: number;
 }
 
 /** Display order in the report. */
 export const METRICS: readonly MetricInfo[] = [
-  { id: "performance", label: "Performance score", unit: "score", higherIsBetter: true, noiseFloor: 3 },
-  { id: "lcp", label: "Largest Contentful Paint", unit: "ms", higherIsBetter: false, noiseFloor: 100 },
-  { id: "fcp", label: "First Contentful Paint", unit: "ms", higherIsBetter: false, noiseFloor: 100 },
-  { id: "tbt", label: "Total Blocking Time", unit: "ms", higherIsBetter: false, noiseFloor: 30 },
-  { id: "cls", label: "Cumulative Layout Shift", unit: "unitless", higherIsBetter: false, noiseFloor: 0.01 },
-  { id: "speedIndex", label: "Speed Index", unit: "ms", higherIsBetter: false, noiseFloor: 150 },
-  { id: "jsBytes", label: "JavaScript (transferred)", unit: "bytes", higherIsBetter: false, noiseFloor: 1024 },
-  { id: "totalBytes", label: "Total transferred", unit: "bytes", higherIsBetter: false, noiseFloor: 2048 },
+  { id: "performance", label: "Performance score", unit: "score", higherIsBetter: true, noiseFloor: 3, relativeFloor: 0 },
+  { id: "lcp", label: "Largest Contentful Paint", unit: "ms", higherIsBetter: false, noiseFloor: 100, relativeFloor: 0.05 },
+  { id: "fcp", label: "First Contentful Paint", unit: "ms", higherIsBetter: false, noiseFloor: 100, relativeFloor: 0.05 },
+  { id: "tbt", label: "Total Blocking Time", unit: "ms", higherIsBetter: false, noiseFloor: 30, relativeFloor: 0.15 },
+  { id: "cls", label: "Cumulative Layout Shift", unit: "unitless", higherIsBetter: false, noiseFloor: 0.01, relativeFloor: 0 },
+  { id: "speedIndex", label: "Speed Index", unit: "ms", higherIsBetter: false, noiseFloor: 150, relativeFloor: 0.05 },
+  { id: "jsBytes", label: "JavaScript (transferred)", unit: "bytes", higherIsBetter: false, noiseFloor: 1024, relativeFloor: 0 },
+  { id: "totalBytes", label: "Total transferred", unit: "bytes", higherIsBetter: false, noiseFloor: 2048, relativeFloor: 0 },
 ];
 
 export const METRIC_IDS: readonly MetricId[] = METRICS.map((metric) => metric.id);
