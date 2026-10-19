@@ -1,6 +1,6 @@
 {
   "name": "perf-budget-guard",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compare a pull request's bundle size and Lighthouse metrics against main, check them against a budget, and post one readable PR comment.",
   "license": "MIT",
   "type": "module",
@@ -14,10 +14,21 @@
   "engines": {
     "node": ">=18.17"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/Gaurav3170/perf-budget-guard.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gaurav3170/perf-budget-guard.git"
+  },
   "homepage": "https://github.com/Gaurav3170/perf-budget-guard#readme",
   "bugs": "https://github.com/Gaurav3170/perf-budget-guard/issues",
-  "keywords": ["performance", "lighthouse", "performance-budget", "bundle-size", "github-action", "core-web-vitals", "pull-request"],
+  "keywords": [
+    "performance",
+    "lighthouse",
+    "performance-budget",
+    "bundle-size",
+    "github-action",
+    "core-web-vitals",
+    "pull-request"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
