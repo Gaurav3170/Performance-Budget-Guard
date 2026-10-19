@@ -2,6 +2,20 @@
 
 Perf Budget Guard catches pull requests that make your pages slower. On every PR it builds your app twice, once from the base branch and once from the PR, measures both with Lighthouse on the same runner, and compares JavaScript size, total transfer size and the Lighthouse lab metrics page by page. When something got worse it names the scripts that caused it, checks the result against your budget, and posts it as a single PR comment that is updated in place on every push. It runs as a GitHub Action or as a CLI on your own machine.
 
+## In plain words
+
+Code review checks whether a change is correct. It rarely checks whether the change made the site slower, so pages get slower a little at a time: a large library in one PR, an unoptimised image in the next.
+
+Perf Budget Guard is that check, run on every pull request:
+
+1. It builds your site twice: as it is on your main branch, and with the pull request's changes.
+2. It loads the pages you list in Lighthouse on a simulated phone, several times each, and keeps the typical result so one slow load doesn't count.
+3. It compares the two builds: how much JavaScript each page downloads, how long the main content takes to appear, and how long the page is too busy to respond.
+4. It checks the PR build against the limits you set, such as "the home page downloads at most 300 kB of JavaScript" or "one PR may not slow down Largest Contentful Paint by more than 10%".
+5. It posts the result on the pull request: 🟢 fine, 🟡 worth a look or 🔴 over budget. On 🔴 the check fails, so the PR can be blocked from merging.
+
+You add two files to your repository, a workflow that runs the check and a budget file with your limits, and every pull request is checked from then on.
+
 ## Example comment
 
 > **Example.** The numbers below are illustrative, not a real measurement. The PR adds a date library to the product page.
@@ -62,6 +76,14 @@ Script names have their content hashes replaced with `*`, so the same chunk can 
 
 ## Quick start
 
+Your app needs:
+
+- a production build command and a start command in `package.json` (for example `next build` and `next start`);
+- a start command that listens on the port in the `PORT` environment variable (`next start` and most Node servers already do);
+- a repository on GitHub, for the PR comment. To try the tool without GitHub, see [Run it locally](#run-it-locally).
+
+Then:
+
 1. Add `.github/workflows/perf-budget.yml` (also in [`examples/perf-budget.yml`](examples/perf-budget.yml)):
 
    ```yaml
@@ -90,7 +112,7 @@ Script names have their content hashes replaced with `*`, so the same chunk can 
              node-version: 20
              cache: npm
 
-         - uses: gaurav3170/perf-budget-guard@v1
+         - uses: Gaurav3170/Performance-Budget-Guard@v1
            with:
              config: perf-budget.json
    ```
@@ -118,6 +140,10 @@ Script names have their content hashes replaced with `*`, so the same chunk can 
    The `start` command must serve the production build on the port given in the `PORT` environment variable. `next start`, `vite preview --port $PORT` and most Node servers already do this. [`examples/perf-budget.json`](examples/perf-budget.json) is a fuller config for a Next.js app.
 
 3. Open a pull request. You don't need `fetch-depth: 0`: the action fetches the base commit itself.
+
+`@v1` follows the latest 1.x release. To pin an exact release, use `@v1.0.0`.
+
+The first run takes a while, often 10–15 minutes for 3 pages at 5 runs each: it installs and builds your app twice, then runs Lighthouse `runs × pages × 2` times. Run it once on a PR that changes nothing, look at the numbers, and set your budgets a little above them.
 
 ### Action inputs
 
