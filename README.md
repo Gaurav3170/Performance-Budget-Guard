@@ -112,7 +112,7 @@ Then:
              node-version: 20
              cache: npm
 
-         - uses: Gaurav3170/Performance-Budget-Guard@v1
+         - uses: Gaurav3170/perf-budget-guard@v1
            with:
              config: perf-budget.json
    ```

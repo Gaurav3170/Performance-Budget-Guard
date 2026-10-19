@@ -14,9 +14,9 @@
   "engines": {
     "node": ">=18.17"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/Gaurav3170/Performance-Budget-Guard.git" },
-  "homepage": "https://github.com/Gaurav3170/Performance-Budget-Guard#readme",
-  "bugs": "https://github.com/Gaurav3170/Performance-Budget-Guard/issues",
+  "repository": { "type": "git", "url": "git+https://github.com/Gaurav3170/perf-budget-guard.git" },
+  "homepage": "https://github.com/Gaurav3170/perf-budget-guard#readme",
+  "bugs": "https://github.com/Gaurav3170/perf-budget-guard/issues",
   "keywords": ["performance", "lighthouse", "performance-budget", "bundle-size", "github-action", "core-web-vitals", "pull-request"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
