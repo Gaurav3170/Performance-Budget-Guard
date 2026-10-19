@@ -14,8 +14,10 @@
   "engines": {
     "node": ">=18.17"
   },
+  "repository": { "type": "git", "url": "git+https://github.com/Gaurav3170/perf-budget-guard.git" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
     "typecheck": "tsc -p tsconfig.test.json",
     "test": "node scripts/test.mjs"
   },
