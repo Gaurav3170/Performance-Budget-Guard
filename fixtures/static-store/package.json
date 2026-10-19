@@ -1,0 +1,10 @@
+{
+  "name": "static-store",
+  "private": true,
+  "type": "module",
+  "description": "Tiny zero-dependency store used to test perf-budget-guard end to end.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs"
+  }
+}

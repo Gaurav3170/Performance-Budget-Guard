@@ -1,0 +1,34 @@
+{
+  "name": "perf-budget-guard",
+  "version": "0.1.0",
+  "description": "Compare a pull request's bundle size and Lighthouse metrics against main, check them against a budget, and post one readable PR comment.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "perf-budget-guard": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "action.yml"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "test": "node scripts/test.mjs"
+  },
+  "dependencies": {
+    "@actions/core": "1.11.1",
+    "@actions/github": "6.0.1",
+    "chrome-launcher": "1.2.0",
+    "lighthouse": "12.8.2",
+    "tree-kill": "1.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.19.130",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}

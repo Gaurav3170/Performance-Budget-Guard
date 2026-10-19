@@ -1,0 +1,74 @@
+name: Perf Budget Guard
+description: Compare a pull request's bundle size and Lighthouse metrics with its base branch, check a budget, and post one PR comment that updates in place.
+author: Gaurav Keswani
+branding:
+  icon: activity
+  color: blue
+
+inputs:
+  config:
+    description: Path to the budget file, relative to working-directory.
+    required: false
+    default: perf-budget.json
+  working-directory:
+    description: Directory of the app to build and measure (for monorepos).
+    required: false
+    default: "."
+  base-ref:
+    description: Branch, tag or SHA to compare against. Defaults to the pull request's base commit. Setting it also allows running outside pull_request events.
+    required: false
+    default: ""
+  github-token:
+    description: Token used to read and write the PR comment. Needs pull-requests write permission.
+    required: false
+    default: ${{ github.token }}
+  comment:
+    description: Post or update the PR comment ("true" or "false"). The job summary is always written.
+    required: false
+    default: "true"
+  fail-on-budget:
+    description: Fail the job when a page breaks the budget ("true" or "false").
+    required: false
+    default: "true"
+  skip-head-install:
+    description: Skip installing dependencies for the PR build, because an earlier step already did.
+    required: false
+    default: "false"
+  skip-head-build:
+    description: Skip building the PR, because an earlier step already did.
+    required: false
+    default: "false"
+
+outputs:
+  status:
+    description: Overall result, "pass", "warn" or "fail".
+    value: ${{ steps.guard.outputs.status }}
+  comment-url:
+    description: URL of the PR comment, when one was posted or updated.
+    value: ${{ steps.guard.outputs.comment-url }}
+
+runs:
+  using: composite
+  steps:
+    # dist/ is not committed, so the tool is installed and compiled from source on each run.
+    - name: Set up Perf Budget Guard
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      # --include=dev: the TypeScript compiler is a dev dependency, and NODE_ENV=production would skip it.
+      run: npm ci --no-audit --no-fund --include=dev && npm run build
+
+    # Composite actions don't pass INPUT_* variables to processes they start, so every
+    # input is mapped explicitly. action.ts reads these PBG_* names.
+    - name: Measure and compare
+      id: guard
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: node "$GITHUB_ACTION_PATH/dist/action.js"
+      env:
+        PBG_CONFIG: ${{ inputs.config }}
+        PBG_BASE_REF: ${{ inputs.base-ref }}
+        PBG_GITHUB_TOKEN: ${{ inputs.github-token }}
+        PBG_COMMENT: ${{ inputs.comment }}
+        PBG_FAIL_ON_BUDGET: ${{ inputs.fail-on-budget }}
+        PBG_SKIP_HEAD_INSTALL: ${{ inputs.skip-head-install }}
+        PBG_SKIP_HEAD_BUILD: ${{ inputs.skip-head-build }}

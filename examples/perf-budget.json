@@ -1,0 +1,26 @@
+{
+  "pages": ["/", "/products", "/products/blue-running-shoe"],
+  "runs": 5,
+  "formFactor": "mobile",
+  "server": {
+    "build": "npm run build",
+    "start": "npm run start",
+    "port": 4100,
+    "readyTimeoutMs": 60000
+  },
+  "budgets": {
+    "performance": 85,
+    "lcp": "2.5 s",
+    "tbt": "200 ms",
+    "cls": 0.1,
+    "jsBytes": "170 kB",
+    "totalBytes": "1 MB"
+  },
+  "maxIncrease": {
+    "performance": 5,
+    "lcp": "10%",
+    "tbt": "50 ms",
+    "jsBytes": "10 kB",
+    "totalBytes": "5%"
+  }
+}

@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.perf-budget-guard/
+fixtures/*/.next/
+fixtures/*/node_modules/
+*.log

@@ -1,0 +1,17 @@
+{
+  "pages": ["/", "/products", "/products/blue-running-shoe"],
+  "runs": 3,
+  "formFactor": "mobile",
+  "server": {
+    "build": "npm run build",
+    "start": "npm run start",
+    "port": 4100
+  },
+  "budgets": {
+    "jsBytes": "20 kB",
+    "tbt": "200 ms"
+  },
+  "maxIncrease": {
+    "jsBytes": "10%"
+  }
+}
