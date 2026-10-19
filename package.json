@@ -1,6 +1,6 @@
 {
   "name": "perf-budget-guard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Compare a pull request's bundle size and Lighthouse metrics against main, check them against a budget, and post one readable PR comment.",
   "license": "MIT",
   "type": "module",
